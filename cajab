@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+#
+
+import glob
+import random
+
+import replika
+import replika.assets
+import replika.ingame
+from replika.ingame import action
+
+
+background = replika.assets.image('assets/background.jpg')
+resolution = background.size
+game = replika.new_game(resolution)
+scene = game.new_scene(auto_switch=True)
+scene.add_asset(background)
+
+
+class Politico(replika.ingame.Puppet):
+    def __init__(self, *args, **kwargs):
+        super(Politico, self).__init__(*args, **kwargs)
+        self.current_action = self.initial
+        self.direction = 0
+
+    @action
+    def initial(self):
+        if self.current_animation.is_finished:
+            self.current_action = self.move_right
+
+    @action
+    def move_left(self):
+        if self.body.x > -512:
+            self.body.x -= 10
+
+    @action
+    def move_right(self):
+        if self.body.x < 512:
+            self.body.x += 10
+
+    def update(self):
+        self.current_action()
+        super(Politico, self).update()
+
+
+politico = replika.assets.Puppet({
+    'initial': replika.assets.Animation(
+        replika.assets.images(sorted(glob.glob('assets/walk_*.png')))),
+    'move_right': replika.assets.Loop(
+        replika.assets.images(sorted(glob.glob('assets/walk_*.png')))),
+    'move_left': replika.assets.Loop(
+        replika.assets.images(sorted(glob.glob('assets/walk_*.png')),
+                              horizontal_flip=True))
+})
+politico.behaviour = Politico
+
+player = scene.add_asset(politico, position=(0, -250))
+
+while game.is_running:
+    if replika.key_state(105):
+        player.current_action=player.move_left
+    if replika.key_state(106):
+        player.current_action=player.move_right
+    if replika.key_state(1) or (game.frame >= 10000):
+        game.quit()
+    game.update()
