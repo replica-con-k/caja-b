@@ -30,11 +30,29 @@ class Politico(replika.ingame.Puppet):
     def move_left(self):
         if self.body.x > -380:
             self.body.x -= 10
+        else:
+            self.stop()
 
+    @action
+    def stand_left(self):
+        pass
+    
     @action
     def move_right(self):
         if self.body.x < 380:
             self.body.x += 10
+        else:
+            self.stop()
+
+    @action
+    def stand_right(self):
+        pass
+    
+    def stop(self):
+        if self.current_action == self.move_right:
+            self.current_action = self.stand_right
+        elif self.current_action == self.move_left:
+            self.current_action = self.stand_left
 
     def update(self):
         self.current_action()
@@ -43,11 +61,21 @@ class Politico(replika.ingame.Puppet):
 
 politico = replika.assets.Puppet({
     'initial': replika.assets.Animation(
-        replika.assets.images(sorted(glob.glob('assets/walk_*.png')))),
+        replika.assets.images(
+            sorted(glob.glob('assets/politico_quieto_*.png')))),
     'move_right': replika.assets.Loop(
-        replika.assets.images(sorted(glob.glob('assets/walk_*.png')))),
+        replika.assets.images(
+            sorted(glob.glob('assets/politico_corre_*.png')))),
+    'stand_right': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico_quieto_*.png')))),
     'move_left': replika.assets.Loop(
-        replika.assets.images(sorted(glob.glob('assets/walk_*.png')),
+        replika.assets.images(
+            sorted(glob.glob('assets/politico_corre_*.png')),
+                              horizontal_flip=True)),
+    'stand_left': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico_quieto_*.png')),
                               horizontal_flip=True))
 })
 politico.behaviour = Politico
@@ -59,6 +87,8 @@ while game.is_running:
         player.current_action=player.move_left
     if replika.key_state(106):
         player.current_action=player.move_right
+    if ((not replika.key_state(105)) and (not replika.key_state(106))):
+        player.stop()
     if replika.key_state(1) or (game.frame >= 10000):
         game.quit()
     game.update()
