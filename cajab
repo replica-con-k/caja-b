@@ -26,7 +26,7 @@ class Politico(replika.ingame.Puppet):
     @action
     def initial(self):
         if self.current_animation.is_finished:
-            self.current_action = self.move_right
+            self.stop()
 
     @action
     def move_left(self):
@@ -64,20 +64,20 @@ class Politico(replika.ingame.Puppet):
 politico = replika.assets.Puppet({
     'initial': replika.assets.Animation(
         replika.assets.images(
-            sorted(glob.glob('assets/politico_quieto_*.png')))),
+            sorted(glob.glob('assets/politico1_quieto_*.png')))),
     'move_right': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico_corre_*.png')))),
+            sorted(glob.glob('assets/politico1_corre_*.png')))),
     'stand_right': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico_quieto_*.png')))),
+            sorted(glob.glob('assets/politico1_quieto_*.png')))),
     'move_left': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico_corre_*.png')),
+            sorted(glob.glob('assets/politico1_corre_*.png')),
                               horizontal_flip=True)),
     'stand_left': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico_quieto_*.png')),
+            sorted(glob.glob('assets/politico1_quieto_*.png')),
                               horizontal_flip=True))
 })
 politico.behaviour = Politico
