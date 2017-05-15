@@ -10,10 +10,12 @@ import replika.ingame
 from replika.ingame import action
 
 
-background = replika.assets.image('assets/background.png')
+background = replika.assets.image('assets/backbackground.png')
+building = replika.assets.image('assets/background.png')
 game = replika.new_game(background.size)
 scene = game.new_scene(auto_switch=True)
 scene.add_asset(background)
+scene.add_asset(building)
 
 
 class Politico(replika.ingame.Puppet):
@@ -28,7 +30,7 @@ class Politico(replika.ingame.Puppet):
 
     @action
     def move_left(self):
-        if self.body.x > -380:
+        if self.body.x > -480:
             self.body.x -= 10
         else:
             self.stop()
@@ -39,7 +41,7 @@ class Politico(replika.ingame.Puppet):
     
     @action
     def move_right(self):
-        if self.body.x < 380:
+        if self.body.x < 480:
             self.body.x += 10
         else:
             self.stop()
@@ -80,7 +82,7 @@ politico = replika.assets.Puppet({
 })
 politico.behaviour = Politico
 
-player = scene.add_asset(politico, position=(0, -150))
+player = scene.add_asset(politico, position=(0, -250))
 
 while game.is_running:
     if replika.key_state(105):
