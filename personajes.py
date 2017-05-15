@@ -5,6 +5,7 @@ import replika.assets
 from replika.ingame import action
 
 import glob
+import random
 
 class _ComportamientoPolitico(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
@@ -63,11 +64,84 @@ def Politico():
     'move_left': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico1_corre_*.png')),
-                              horizontal_flip=True)),
+            horizontal_flip=True)),
     'stand_left': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico1_quieto_*.png')),
-                              horizontal_flip=True))
+            horizontal_flip=True))
     })
     _politico.behaviour = _ComportamientoPolitico
     return _politico
+
+
+class _ComportamientoCorrupto(replika.ingame.Puppet):
+    def __init__(self, *args, **kwargs):
+        super(_ComportamientoCorrupto, self).__init__(*args, **kwargs)
+        self.current_action = self.initial
+
+    @action
+    def initial(self):
+        if self.current_animation.is_finished:
+            self.current_action = self.move_right
+
+    def _throw_money_(self):
+        if random.randint(0, 10) == 5:
+            return True
+        return False
+    
+    @action
+    def move_left(self):
+        if self.body.x > -390:
+            self.body.x -= 10
+            if self._throw_money_():
+                self.current_action = self.throw_left
+        else:
+            self.current_action = self.move_right
+
+    @action
+    def move_right(self):
+        if self.body.x < 390:
+            self.body.x += 10
+            if self._throw_money_():
+                self.current_action = self.throw_right
+        else:
+            self.current_action = self.move_left
+
+    @action
+    def throw_left(self):
+        if self.current_animation.is_finished:
+            self.current_action = self.move_left
+
+    @action
+    def throw_right(self):
+        if self.current_animation.is_finished:
+            self.current_action = self.move_right
+
+    def update(self):
+        self.current_action()
+        super(_ComportamientoCorrupto, self).update()
+
+
+def Corrupto():
+    _corrupto = replika.assets.Puppet({
+    'initial': replika.assets.Animation(
+        replika.assets.images(
+            sorted(glob.glob('assets/corrupto_arriba_anda_*.png')),
+            horizontal_flip=True)),
+    'move_right': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/corrupto_arriba_anda_*.png')),
+            horizontal_flip=True)),
+    'move_left': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/corrupto_arriba_anda_*.png')))),
+    'throw_right': replika.assets.Animation(
+        replika.assets.images(
+            sorted(glob.glob('assets/corrupto_arriba_suelta_*.png')),
+            horizontal_flip=True)),
+    'throw_left': replika.assets.Animation(
+        replika.assets.images(
+            sorted(glob.glob('assets/corrupto_arriba_suelta_*.png'))))        
+    })
+    _corrupto.behaviour = _ComportamientoCorrupto
+    return _corrupto

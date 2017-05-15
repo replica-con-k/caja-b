@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 #
 
-import glob
-import random
-
 import replika
 import replika.assets
 import replika.ingame
@@ -11,12 +8,12 @@ import replika.ingame
 import personajes
 
 background = replika.assets.image('assets/backbackground.png')
-building = replika.assets.image('assets/background.png')
 game = replika.new_game(background.size)
 scene = game.new_scene(auto_switch=True)
 scene.add_asset(background)
-scene.add_asset(building)
 
+corrupto = scene.add_asset(personajes.Corrupto(), position=(0, 300))
+scene.add_asset(replika.assets.image('assets/background.png'))
 player = scene.add_asset(personajes.Politico(), position=(0, -250))
 
 while game.is_running:
