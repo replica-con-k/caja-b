@@ -5,6 +5,7 @@ import replika
 import replika.assets
 import replika.ingame
 
+import objetos
 import personajes
 
 background = replika.assets.image('assets/backbackground.png')

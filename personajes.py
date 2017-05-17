@@ -7,6 +7,8 @@ from replika.ingame import action
 import glob
 import random
 
+import objetos
+
 class _ComportamientoPolitico(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
         super(_ComportamientoPolitico, self).__init__(*args, **kwargs)
@@ -78,6 +80,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
         super(_ComportamientoCorrupto, self).__init__(*args, **kwargs)
         self.current_action = self.initial
+        self._throw_delay_ = 5
 
     @action
     def initial(self):
@@ -94,6 +97,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
         if self.body.x > -390:
             self.body.x -= 10
             if self._throw_money_():
+                self._throw_delay_ = 5
                 self.current_action = self.throw_left
         else:
             self.current_action = self.move_right
@@ -103,17 +107,26 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
         if self.body.x < 390:
             self.body.x += 10
             if self._throw_money_():
+                self._throw_delay_ = 5
                 self.current_action = self.throw_right
         else:
             self.current_action = self.move_left
 
     @action
     def throw_left(self):
+        self._throw_delay_ -= 1
+        if self._throw_delay_ == 0:
+            self.layer.add_asset(objetos.Maletin(),
+                                 position=(self.body.x - 50, self.body.y))
         if self.current_animation.is_finished:
             self.current_action = self.move_left
 
     @action
     def throw_right(self):
+        self._throw_delay_ -= 1
+        if self._throw_delay_ == 0:
+            self.layer.add_asset(objetos.Maletin(),
+                                 position=(self.body.x + 50, self.body.y))
         if self.current_animation.is_finished:
             self.current_action = self.move_right
 
