@@ -15,15 +15,24 @@ scene.add_asset(background)
 
 corrupto = scene.add_asset(personajes.Corrupto(), position=(0, 300))
 scene.add_asset(replika.assets.image('assets/background.png'))
-player = scene.add_asset(personajes.Politico(), position=(0, -250))
+player1 = scene.add_asset(personajes.Politico(1), position=(-100, -250))
+player2 = scene.add_asset(personajes.Politico(2), position=( 100, -250))
+player1.stop()
+player2.stop()
 
 while game.is_running:
     if replika.key_state(105):
-        player.current_action=player.move_left
+        player1.current_action=player1.move_left
     if replika.key_state(106):
-        player.current_action=player.move_right
+        player1.current_action=player1.move_right
+    if replika.key_state(44):
+        player2.current_action=player2.move_left
+    if replika.key_state(46):
+        player2.current_action=player2.move_right
     if ((not replika.key_state(105)) and (not replika.key_state(106))):
-        player.stop()
+        player1.stop()
+    if ((not replika.key_state(44)) and (not replika.key_state(46))):
+        player2.stop()
     if replika.key_state(1) or (game.frame >= 10000):
         game.quit()
     game.update()

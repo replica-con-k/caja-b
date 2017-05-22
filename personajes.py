@@ -52,24 +52,24 @@ class _ComportamientoPolitico(replika.ingame.Puppet):
         super(_ComportamientoPolitico, self).update()
 
 
-def Politico():
+def Politico(n=1):
     _politico = replika.assets.Puppet({
     'initial': replika.assets.Animation(
         replika.assets.images(
-            sorted(glob.glob('assets/politico1_quieto_*.png')))),
+            sorted(glob.glob('assets/politico%s_quieto_*.png' % n)))),
     'move_right': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico1_corre_*.png')))),
+            sorted(glob.glob('assets/politico%s_corre_*.png' % n)))),
     'stand_right': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico1_quieto_*.png')))),
+            sorted(glob.glob('assets/politico%s_quieto_*.png' % n)))),
     'move_left': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico1_corre_*.png')),
+            sorted(glob.glob('assets/politico%s_corre_*.png' % n)),
             horizontal_flip=True)),
     'stand_left': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/politico1_quieto_*.png')),
+            sorted(glob.glob('assets/politico%s_quieto_*.png' % n)),
             horizontal_flip=True))
     })
     _politico.behaviour = _ComportamientoPolitico
