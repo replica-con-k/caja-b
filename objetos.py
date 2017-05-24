@@ -33,10 +33,14 @@ def Maletin():
     _maletin = replika.assets.Puppet({
     'initial': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/maletin_*.png')))),
+            sorted(glob.glob('assets/maletin_0*.png')))),
+    'final': replika.assets.Animation(
+        replika.assets.images(
+            sorted(glob.glob('assets/maletin_out_*.png'))),
+        persistent=False),
     'move_down': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/maletin_*.png'))))
+            sorted(glob.glob('assets/maletin_0*.png'))))
     })
     _maletin.behaviour = _ComportamientoMaletin
     return _maletin
