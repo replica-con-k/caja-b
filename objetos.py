@@ -7,25 +7,41 @@ from replika.ingame import action
 import glob
 import random
 
+GRAVITY=-1
 
 class _ComportamientoMaletin(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
         super(_ComportamientoMaletin, self).__init__(*args, **kwargs)
         self.current_action = self.initial
+        self.speed = (0, 0)
 
     @action
     def initial(self):
-        self.current_action = self.move_down
+        if self.speed[0] != 0:
+            self.current_action = self.fall_down
+        else:
+            self.current_action = self.move_down
 
     @action
     def move_down(self):
-        if self.body.y > -300:
-            self.body.y -= 15
+        if self.body.y > -290:
+            self.body.y += self.speed[1]
         else:
+            self.speed = (0, 0)
+            self.kill()
+
+    @action
+    def fall_down(self):
+        self.body.x += self.speed[0]
+        if self.body.y > -280:
+            self.body.y += self.speed[1]
+        else:
+            self.speed = (0, 0)
             self.kill()
 
     def update(self):
         self.current_action()
+        self.speed = (self.speed[0], self.speed[1] + GRAVITY)
         super(_ComportamientoMaletin, self).update()
 
 
@@ -40,7 +56,10 @@ def Maletin():
         persistent=False),
     'move_down': replika.assets.Loop(
         replika.assets.images(
-            sorted(glob.glob('assets/maletin_0*.png'))))
+            sorted(glob.glob('assets/maletin_0*.png')))),
+    'fall_down': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/maletin_parabola_0*.png'))))
     })
     _maletin.behaviour = _ComportamientoMaletin
     return _maletin

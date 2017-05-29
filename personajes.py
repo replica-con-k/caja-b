@@ -95,7 +95,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     @action
     def move_left(self):
         if self.body.x > -390:
-            self.body.x -= 10
+            self.body.x -= 8
             if self._throw_money_():
                 self._throw_delay_ = 5
                 self.current_action = random.choice([self.drop_left,
@@ -106,7 +106,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     @action
     def move_right(self):
         if self.body.x < 390:
-            self.body.x += 10
+            self.body.x += 8
             if self._throw_money_():
                 self._throw_delay_ = 5
                 self.current_action = random.choice([self.drop_right,
@@ -118,8 +118,10 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     def drop_left(self):
         self._throw_delay_ -= 1
         if self._throw_delay_ == 0:
-            self.layer.add_asset(objetos.Maletin(),
-                                 position=(self.body.x - 50, self.body.y))
+            maletin = self.layer.add_asset(
+                objetos.Maletin(),
+                position=(self.body.x - 50, self.body.y))
+            maletin.speed = (0, 0)
         if self.current_animation.is_finished:
             self.current_action = self.move_left
 
@@ -127,8 +129,10 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     def drop_right(self):
         self._throw_delay_ -= 1
         if self._throw_delay_ == 0:
-            self.layer.add_asset(objetos.Maletin(),
-                                 position=(self.body.x + 50, self.body.y))
+            maletin = self.layer.add_asset(
+                objetos.Maletin(),
+                position=(self.body.x + 50, self.body.y))
+            maletin.speed = (0, 0)
         if self.current_animation.is_finished:
             self.current_action = self.move_right
 
@@ -136,8 +140,10 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     def throw_left(self):
         self._throw_delay_ -= 1
         if self._throw_delay_ == 0:
-            self.layer.add_asset(objetos.Maletin(),
-                                 position=(self.body.x - 50, self.body.y))
+            maletin = self.layer.add_asset(
+                objetos.Maletin(),
+                position=(self.body.x - 50, self.body.y))
+            maletin.speed = (-5, 5)
         if self.current_animation.is_finished:
             self.current_action = self.move_left
 
@@ -145,8 +151,10 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
     def throw_right(self):
         self._throw_delay_ -= 1
         if self._throw_delay_ == 0:
-            self.layer.add_asset(objetos.Maletin(),
-                                 position=(self.body.x + 50, self.body.y))
+            maletin = self.layer.add_asset(
+                objetos.Maletin(),
+                position=(self.body.x + 50, self.body.y))
+            maletin.speed = (5, 5)
         if self.current_animation.is_finished:
             self.current_action = self.move_right
 

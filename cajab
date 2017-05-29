@@ -9,7 +9,7 @@ import objetos
 import personajes
 
 background = replika.assets.image('assets/backbackground.png')
-game = replika.new_game(background.size)
+game = replika.new_game(background.size, fps=24.0)
 scene = game.new_scene(auto_switch=True)
 scene.add_asset(background)
 
