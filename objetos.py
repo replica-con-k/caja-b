@@ -36,7 +36,7 @@ def Maletin():
             sorted(glob.glob('assets/maletin_0*.png')))),
     'final': replika.assets.Animation(
         replika.assets.images(
-            sorted(glob.glob('assets/maletin_out_*.png'))),
+            sorted(glob.glob('assets/maletin_broke_*.png'))),
         persistent=False),
     'move_down': replika.assets.Loop(
         replika.assets.images(
