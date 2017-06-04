@@ -13,6 +13,7 @@ class _ComportamientoPolitico(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
         super(_ComportamientoPolitico, self).__init__(*args, **kwargs)
         self.current_action = self.initial
+        self.score = 0
 
     @action
     def initial(self):
@@ -75,6 +76,12 @@ def Politico(n=1):
     _politico.behaviour = _ComportamientoPolitico
     return _politico
 
+def cuerpo_politico(n):
+    return (replika.physics.create_body(
+        replika.assets.image('assets/politico1_quieto_01.png')) if n == 1 else
+            replika.physics.create_body(
+                replika.assets.image('assets/politico2_quieto_0001.png'))
+    )
 
 class _ComportamientoCorrupto(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
@@ -122,6 +129,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
                 objetos.Maletin(),
                 position=(self.body.x - 50, self.body.y))
             maletin.speed = (0, 0)
+            maletin.body = objetos.cuerpo_maletin()
         if self.current_animation.is_finished:
             self.current_action = self.move_left
 
@@ -133,6 +141,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
                 objetos.Maletin(),
                 position=(self.body.x + 50, self.body.y))
             maletin.speed = (0, 0)
+            maletin.body = objetos.cuerpo_maletin()
         if self.current_animation.is_finished:
             self.current_action = self.move_right
 
@@ -144,6 +153,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
                 objetos.Maletin(),
                 position=(self.body.x - 50, self.body.y))
             maletin.speed = (-5, 5)
+            maletin.body = objetos.cuerpo_maletin()
         if self.current_animation.is_finished:
             self.current_action = self.move_left
 
@@ -155,6 +165,7 @@ class _ComportamientoCorrupto(replika.ingame.Puppet):
                 objetos.Maletin(),
                 position=(self.body.x + 50, self.body.y))
             maletin.speed = (5, 5)
+            maletin.body = objetos.cuerpo_maletin()
         if self.current_animation.is_finished:
             self.current_action = self.move_right
 

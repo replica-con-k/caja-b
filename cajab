@@ -8,15 +8,33 @@ import replika.ingame
 import objetos
 import personajes
 
+def collision_handler(element):
+    pass
+    
 background = replika.assets.image('assets/backbackground.png')
 game = replika.new_game(background.size, fps=24.0)
 scene = game.new_scene(auto_switch=True)
+game.current_scene.new_layer('foreground',
+                             layer_type=replika.layer.PhysicsLayer)
+game.current_scene.set_default_layer('foreground')
 scene.add_asset(background)
-
 corrupto = scene.add_asset(personajes.Corrupto(), position=(0, 300))
 scene.add_asset(replika.assets.image('assets/background.png'))
-player1 = scene.add_asset(personajes.Politico(1), position=(-100, -250))
-player2 = scene.add_asset(personajes.Politico(2), position=( 100, -250))
+player1 = scene.add_asset(personajes.Politico(1), position=(-100, -250),
+                          name='politico1')
+player1.body = personajes.cuerpo_politico(1)
+player1.collision = collision_handler
+
+player2 = scene.add_asset(personajes.Politico(2), position=( 100, -250),
+                          name='politico2')
+player2.body = personajes.cuerpo_politico(2)
+player2.collision = collision_handler
+
+politico = {
+    'politico1': player1,
+    'politico2': player2
+}
+
 player1.stop()
 player2.stop()
 
