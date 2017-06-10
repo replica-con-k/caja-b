@@ -12,43 +12,112 @@ import objetos
 class _ComportamientoPolitico(replika.ingame.Puppet):
     def __init__(self, *args, **kwargs):
         super(_ComportamientoPolitico, self).__init__(*args, **kwargs)
+        self._vy = 0
+        self._ground = self.body.y
         self.current_action = self.initial
         self.score = 0
 
+    @property
+    def on_air(self):
+        return self.body.y > self._ground
+
+    @property
+    def left_oriented(self):
+        return self.current_action in [self.step_left, self.stand_left,
+                                       self.jump_left, self.fall_left,
+                                       self.move_left]
+
+    @property
+    def right_oriented(self):
+        return self.current_action in [self.step_right, self.stand_right,
+                                       self.jump_right, self.fall_right,
+                                       self.move_right, self.initial]
+    
     @action
     def initial(self):
         if self.current_animation.is_finished:
+            self.current_action = self.stand_right
             self.stop()
 
     @action
-    def move_left(self):
-        if self.body.x > -480:
-            self.body.x -= 10
-        else:
-            self.stop()
-
-    @action
-    def stand_left(self):
+    def step_left(self):
         pass
     
     @action
-    def move_right(self):
-        if self.body.x < 480:
-            self.body.x += 10
-        else:
-            self.stop()
+    def stand_left(self):
+        pass
+
+    @action
+    def jump_left(self):
+        pass
+
+    @action
+    def fall_left(self):
+        pass
+
+    @action
+    def step_right(self):
+        pass
 
     @action
     def stand_right(self):
         pass
+
+    @action
+    def jump_right(self):
+        pass
     
+    @action
+    def fall_right(self):
+        pass
+
+    def move_right(self):
+        if self.body.x < 480:
+            self.body.x += 10
+            if self.on_air:
+                self.current_action = (
+                    self.jump_right if self._vy > 0 else self.fall_right)
+            else:
+                self.current_action = self.step_right
+        else:
+            self.stop()
+        self.current_action()
+        
+    def move_left(self):
+        if self.body.x > -480:
+            self.body.x -= 10
+            if self.on_air:
+                self.current_action = (
+                    self.jump_left if self._vy > 0 else self.fall_left)
+            else:
+                self.current_action = self.step_left
+        else:
+            self.stop()
+        self.current_action()
+
+    def jump(self):
+        if self.on_air:
+            return
+        self._vy = 10        
+        self.current_action = (
+            self.jump_right if self.right_oriented else self.jump_left)
+        self.current_action()
+
     def stop(self):
-        if self.current_action == self.move_right:
-            self.current_action = self.stand_right
-        elif self.current_action == self.move_left:
-            self.current_action = self.stand_left
+        if self.right_oriented:
+            self.current_action = (
+                self.fall_right if self.on_air else self.stand_right)
+        else:
+            self.current_action = (
+                self.fall_left if self.on_air else self.stand_left)
 
     def update(self):
+        self.body.y += self._vy
+        if self.on_air:
+            self._vy -= 1
+        if self.body.y <= self._ground:
+            self.body.y = self._ground
+            self._vy = 0
         self.current_action()
         super(_ComportamientoPolitico, self).update()
 
@@ -58,19 +127,33 @@ def Politico(n=1):
     'initial': replika.assets.Animation(
         replika.assets.images(
             sorted(glob.glob('assets/politico%s_quieto_*.png' % n)))),
-    'move_right': replika.assets.Loop(
+    'step_right': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico%s_corre_*.png' % n)))),
     'stand_right': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico%s_quieto_*.png' % n)))),
-    'move_left': replika.assets.Loop(
+    'jump_right': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico1_saltando_*.png')))),
+    'fall_right': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico1_suspension_*.png')))),
+    'step_left': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico%s_corre_*.png' % n)),
             horizontal_flip=True)),
     'stand_left': replika.assets.Loop(
         replika.assets.images(
             sorted(glob.glob('assets/politico%s_quieto_*.png' % n)),
+            horizontal_flip=True)),
+    'jump_left': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico1_saltando_*.png')),
+            horizontal_flip=True)),
+    'fall_left': replika.assets.Loop(
+        replika.assets.images(
+            sorted(glob.glob('assets/politico1_suspension_*.png')),
             horizontal_flip=True))
     })
     _politico.behaviour = _ComportamientoPolitico

@@ -40,13 +40,17 @@ player2.stop()
 
 while game.is_running:
     if replika.key_state(105):
-        player1.current_action=player1.move_left
+        player1.move_left()
     if replika.key_state(106):
-        player1.current_action=player1.move_right
+        player1.move_right()
+    if replika.key_state(82):
+        player1.jump()
     if replika.key_state(44):
-        player2.current_action=player2.move_left
+        player2.move_left()
     if replika.key_state(46):
-        player2.current_action=player2.move_right
+        player2.move_right()
+    if replika.key_state(48):
+        player2.jump()
     if ((not replika.key_state(105)) and (not replika.key_state(106))):
         player1.stop()
     if ((not replika.key_state(44)) and (not replika.key_state(46))):
